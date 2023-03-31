@@ -25,6 +25,9 @@ jobs:
       name: dev
       url: 'conduitzimer.com'
       needs: build
+      steps:
+        - name: Run a one-line script
+          run: echo Deploy Dev
       
   deploy-hmg:
     runs-on: ubuntu-latest
@@ -32,6 +35,9 @@ jobs:
       name: hmg
       url: 'conduitzimer.com'
       needs: deploy-dev
+      steps:
+        - name: Run a one-line script
+          run: echo Deploy Hmg
       
   deploy-prd:
     runs-on: ubuntu-latest
@@ -39,3 +45,6 @@ jobs:
       name: prd
       url: 'conduitzimer.com'
       needs: deploy-hmg
+      steps:
+        - name: Run a one-line script
+          run: echo Deploy Prd
