@@ -1,0 +1,41 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@359bebbc29cbe6c87da6bc9ea3bc930432750108
+        with:
+          ruby-version: '3.1'
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        run: bundle exec rake
+      - name: Linting
+        run: rubocop
+        
+  deploy-dev:
+    runs-on: ubuntu-latest
+    env:
+      name: dev
+      url: 'conduitzimer.com'
+      needs: build
+      
+  deploy-hmg:
+    runs-on: ubuntu-latest
+    env:
+      name: hmg
+      url: 'conduitzimer.com'
+      needs: deploy-dev
+      
+  deploy-prd:
+    runs-on: ubuntu-latest
+    env:
+      name: prd
+      url: 'conduitzimer.com'
+      needs: deploy-hmg
