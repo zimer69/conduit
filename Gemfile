@@ -12,12 +12,6 @@ gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
 
-gem 'rubocop-rails', require: false
-
-gem 'rubocop-rspec', '~> 2.19'
-
-gem 'rubocop-performance', '~> 1.16'
-
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
@@ -48,6 +42,12 @@ group :development, :test do
   %w[rspec-core rspec-expectations rspec-mocks rspec-rails rspec-support].each do |lib|
     gem lib, git: "https://github.com/rspec/#{lib}.git", branch: 'main'
   end
+  gem 'rubocop-rails', require: false
+end
+
+group :test do
+  gem 'rubocop-rspec', '~> 2.19'
+  gem 'rubocop-performance', '~> 1.16'
 end
 
 group :development do
