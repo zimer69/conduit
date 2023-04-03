@@ -18,6 +18,8 @@ gem 'rubocop-rspec', '~> 2.19'
 
 gem 'rubocop-performance', '~> 1.16'
 
+gem 'dotenv-rails', groups: [:development, :test]
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
