@@ -18,8 +18,6 @@ gem 'rubocop-rspec', '~> 2.19'
 
 gem 'rubocop-performance', '~> 1.16'
 
-gem 'dotenv-rails', groups: [:development, :test]
-
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
@@ -50,6 +48,7 @@ group :development, :test do
   %w[rspec-core rspec-expectations rspec-mocks rspec-rails rspec-support].each do |lib|
     gem lib, git: "https://github.com/rspec/#{lib}.git", branch: 'main'
   end
+  gem 'dotenv-rails'
 end
 
 group :development do
