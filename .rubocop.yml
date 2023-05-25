@@ -2,9 +2,8 @@ require: rubocop-rails
 require: rubocop-performance
 require: rubocop-rspec
 
-# Treat offenses as warnings instead of errors
-AllCops:
-  Severity: warning
-# Treat Layout/LineLength offenses as warnings
+Style/Encoding:
+  Enabled: false
+
 Layout/LineLength:
-  Severity: warning
+  Max: 99
