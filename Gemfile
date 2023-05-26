@@ -14,8 +14,6 @@ gem 'pg', '~> 1.1'
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '~> 5.0'
 
-gem 'rubocop-rails', require: false
-
 gem 'rubocop-rspec', '~> 2.19'
 
 gem 'rubocop-performance', '~> 1.16'
@@ -55,6 +53,7 @@ group :development, :test do
   end
   gem 'factory_bot_rails'
   gem 'shoulda-matchers'
+  gem 'rubocop-rails', require: false
 end
 
 group :development do
