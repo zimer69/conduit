@@ -9,6 +9,8 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 module Conduit
+  # Main application class for the Conduit application. It configures various
+  # settings and initializes the Rails application.
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0

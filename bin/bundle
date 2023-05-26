@@ -22,21 +22,16 @@ m = Module.new do
   end
 
   def cli_arg_version
-    return unless invoked_as_script? # don't want to hijack other binstubs
-    return unless 'update'.start_with?(ARGV.first || ' ') # must be running `bundle update`
+    return unless invoked_as_script? && update_command?
 
-    bundler_version = nil
-    update_index = nil
-    ARGV.each_with_index do |a, i|
-      if update_index && update_index.succ == i && a =~ Gem::Version::ANCHORED_VERSION_PATTERN
-        bundler_version = a
+    ARGV.each_with_index do |arg, i|
+      if bundler_version_option?(arg)
+        return extract_bundler_version(arg)
+      elsif version_argument?(arg, i)
+        return ARGV[i + 1] if valid_version?(ARGV[i + 1])
       end
-      next unless a =~ /\A--bundler(?:[= ](#{Gem::Version::VERSION_PATTERN}))?\z/
-
-      bundler_version = Regexp.last_match(1)
-      update_index = i
     end
-    bundler_version
+    nil
   end
 
   def gemfile
@@ -93,20 +88,34 @@ m = Module.new do
   end
 
   def activate_bundler
-    gem_error = activation_error_handling do
-      gem 'bundler', bundler_requirement
-    end
+    gem_error = activate_gem
     return if gem_error.nil?
 
-    require_error = activation_error_handling do
+    require_error = require_bundler_version
+    return if require_error.nil?
+
+    warn_activation_failure(gem_error)
+    exit 42
+  end
+
+  def activate_gem
+    activation_error_handling do
+      gem 'bundler', bundler_requirement
+    end
+  end
+
+  def require_bundler_version
+    activation_error_handling do
       require 'bundler/version'
     end
-    if require_error.nil? && Gem::Requirement.new(bundler_requirement).satisfied_by?(Gem::Version.new(Bundler::VERSION))
-      return
-    end
+  end
 
-    warn "Activating bundler (#{bundler_requirement}) failed:\n#{gem_error.message}\n\nTo install the version of bundler this project requires, run `gem install bundler -v '#{bundler_requirement}'`"
-    exit 42
+  def warn_activation_failure(gem_error)
+    message = "Activating bundler (#{bundler_requirement})
+              failed:\n#{gem_error.message}\n\nTo install the version
+              of bundler this project requires, run `gem install
+              bundler -v '#{bundler_requirement}'`"
+    warn message
   end
 
   def activation_error_handling
@@ -120,3 +129,30 @@ end
 m.load_bundler!
 
 load Gem.bin_path('bundler', 'bundle') if m.invoked_as_script?
+
+private
+
+def invoked_as_script?
+  $PROGRAM_NAME == __FILE__
+end
+
+def update_command?
+  ARGV.first == 'update'
+end
+
+def bundler_version_option?(arg)
+  arg =~ /\A--bundler(?:[= ](#{Gem::Version::VERSION_PATTERN}))?\z/
+end
+
+def extract_bundler_version(_arg)
+  # method implementation
+end
+
+def version_argument?(arg, index)
+  update_index = ARGV.index('update')
+  update_index && update_index + 1 == index && arg =~ Gem::Version::ANCHORED_VERSION_PATTERN
+end
+
+def valid_version?(version)
+  version =~ Gem::Version::ANCHORED_VERSION_PATTERN
+end
